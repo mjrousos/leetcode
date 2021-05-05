@@ -12,10 +12,9 @@ var shoppingOffers = function(price, special, needs) {
 
 function getOfferCombinations(price, specials, needs) {
     // Get the price if no specials are used and initialize the return array with it
-    let priceWithoutSpecials = needs.reduce((acc, numberNeeded, index) => acc + numberNeeded * price[index], 0);
     let combinations = [
         {
-            "cost": priceWithoutSpecials,
+            "cost": needs.reduce((acc, numberNeeded, index) => acc + numberNeeded * price[index], 0),
             "specials": []
         }
     ];
@@ -24,20 +23,20 @@ function getOfferCombinations(price, specials, needs) {
         let special = specials[i];
 
         // Check whether the special can be used
-        let needsAfterSpecial = [];
+        let needsAfterSpecial = [...needs];
         let specialApplies = true;
         for (let j = 0; j < needs.length; j++) {
-            needsAfterSpecial.push(needs[j] - special[j]);
+            needsAfterSpecial[j] -= special[j];
             if (needsAfterSpecial[j] < 0) {
                 specialApplies = false;
+                break;
             }
         }
         if (specialApplies)
         {
             // If the special would apply, get all possible combinations and add on the special
-            let specialPrice = special[special.length - 1];
             for(let newCombination of getOfferCombinations(price, specials, needsAfterSpecial)) {
-                newCombination.cost += specialPrice;
+                newCombination.cost += special[special.length - 1];
                 newCombination.specials.push(i);
                 combinations.push(newCombination);
             }

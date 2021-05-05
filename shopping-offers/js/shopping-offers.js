@@ -11,6 +11,7 @@ var shoppingOffers = function(price, special, needs) {
     // Get all possible valid combinations of specials
     let combinations = getOfferCombinations(price, special, needs);
 
+    // A little diagnostic logging
     for(const combination of combinations) {
         console.log(`Could spend ${combination.cost} by buying specials: [${combination.specials}]`);
     }
@@ -22,6 +23,8 @@ var shoppingOffers = function(price, special, needs) {
     return minCost;
 };
 
+// Get all possible ways of purchasing a given number of items
+// Returns an array of { "cost": number, "specials": number[] }
 function getOfferCombinations(price, specials, needs) {
     // Get the price if no specials are used and initialize the return array with it
     let priceWithoutSpecials = needs.reduce((acc, numberNeeded, index) => acc + numberNeeded * price[index], 0);
@@ -32,14 +35,19 @@ function getOfferCombinations(price, specials, needs) {
         }
     ];
 
+    // Iterate through all available specials
     for (let i = 0; i < specials.length; i++) {
         let special = specials[i];
 
-        // Check whether the special can be used
+        // See how many needs are left if we apply the special
         let numberNeededAfterSpecial = needs.map((numberNeeded, index) => numberNeeded - special[index]);
+
+        // If the special could be used (no needs went negative), find all the ways that the *remaining*
+        // needs can be purchased.
         if (numberNeededAfterSpecial.every(n => n >= 0))
         {
-            // If the special would apply, get all possible combinations and add on the special
+            // If the special would apply, recurse and find all combinations to buy
+            // the remaining items and then add on the price for the special used
             let specialPrice = special[special.length - 1];
             for(let newCombination of getOfferCombinations(price, specials, numberNeededAfterSpecial)) {
                 newCombination.cost += specialPrice;

@@ -16,6 +16,8 @@ public class TestClass
 {
     private IterativeSolution IterativeSolution = new(); 
     private RecursiveSolution RecursiveSolution = new();
+    private ModifiedRecursiveSolution ModifiedRecursiveSolution = new();
+    private ModifiedIterativeSolution ModifiedIterativeSolution = new();
 
     List<ListNode> Inputs = new List<ListNode>();
 
@@ -28,6 +30,14 @@ public class TestClass
             Inputs.Add(listNode);
             listNode = new ListNode(i % 10, listNode);
         }
+    }
+
+    [Benchmark]
+    public void ModifiedRecursiveTest()
+    {
+        foreach (var a in Inputs)
+            foreach (var b in Inputs)
+                ModifiedRecursiveSolution.AddTwoNumbers(a, b);
     }
 
     [Benchmark]
@@ -44,6 +54,14 @@ public class TestClass
         foreach (var a in Inputs)
             foreach (var b in Inputs)
                 IterativeSolution.AddTwoNumbers(a, b);
+    }
+
+    [Benchmark]
+    public void ModifiedIterativeTest()
+    {
+        foreach (var a in Inputs)
+            foreach (var b in Inputs)
+                ModifiedIterativeSolution.AddTwoNumbers(a, b);
     }
 }
 
